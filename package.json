@@ -1,0 +1,26 @@
+{
+  "name": "vim-textobj-block",
+  "version": "1.0.0",
+  "description": "A vim-textobj user plugin for general blocks",
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^18.0.6",
+    "mocha": "^6.2.0",
+    "nvim-test-js": "0.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  },
+  "scripts": {
+    "test": "mocha --require ts-node/register --exit test/**/**/*.test.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kizza/vim-textobj-block.git"
+  },
+  "author": "kizza (Keiran O'Leary)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kizza/vim-textobj-block/issues"
+  },
+  "homepage": "https://github.com/kizza/vim-textobj-block#readme"
+}
