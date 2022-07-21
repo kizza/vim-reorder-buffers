@@ -1,4 +1,4 @@
-# Reorder your vim buffers
+# Reorder your vim buffers!
 [![Tests](https://github.com/kizza/vim-reorder-buffers/actions/workflows/tests.yml/badge.svg)](https://github.com/kizza/vim-reorder-buffers/actions/workflows/tests.yml)
 
 The vim buffer list is immutable - and there's lots of context to how and why.  Ultimately however there are numerous reasons where you want to move them around.
