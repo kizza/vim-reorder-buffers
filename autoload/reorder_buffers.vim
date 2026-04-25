@@ -1,3 +1,41 @@
+function reorder_buffers#move_to(target_index)
+  let buffers = s:visible_buffers()
+  let current_buffer = winbufnr(0)
+  let current_index = index(buffers, current_buffer)
+
+  " Guard
+  if len(buffers) <= 1
+    return
+  elseif s:has_modified_buffers(buffers) && !s:auto_save_buffers()
+    echo "Buffers must be saved first"
+    return
+  end
+
+  " Convert 1-based position to 0-based index and clamp to valid range
+  let target = max([0, min([a:target_index - 1, len(buffers) - 1])])
+
+  if target == current_index
+    return
+  end
+
+  " Build desired buffer order: remove current, insert at target
+  let desired = copy(buffers)
+  call remove(desired, current_index)
+  call insert(desired, current_buffer, target)
+
+  " Wipe and re-open all buffers from the first changed position onward
+  let first_changed = min([current_index, target])
+  let buffers_to_delete = desired[first_changed:]
+  let restore_state = s:buffer_reopen_states(buffers_to_delete)
+  execute("bwipeout ". join(buffers_to_delete))
+  for state in restore_state
+    execute("edit +". state["linenr"] ." ". state["path"])
+  endfor
+
+  " Re-select the current buffer
+  execute("buffer ". s:visible_buffers()[target])
+endfunction
+
 function reorder_buffers#shift(direction)
   let buffers = s:visible_buffers()
   let current_buffer = winbufnr(0)

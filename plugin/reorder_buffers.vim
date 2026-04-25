@@ -9,4 +9,5 @@ let g:loaded_reorder_buffers_loaded = 1
 " Mappings
 command! ShiftBufferLeft call reorder_buffers#shift("left")
 command! ShiftBufferRight call reorder_buffers#shift("right")
+command! -nargs=1 MoveBufferTo call reorder_buffers#move_to(<args>)
 
