@@ -13,6 +13,43 @@ function reorder_buffers#move_to(position)
   call s:move_buffer_to_index(buffers, current_index, target)
 endfunction
 
+" Close all buffers after the given 1-based position
+function reorder_buffers#close_after(position)
+  let buffers = s:visible_buffers()
+  let idx = max([0, min([a:position - 1, len(buffers) - 1])])
+  call s:close_buffers(buffers, buffers[idx + 1:])
+endfunction
+
+" Close all buffers before the given 1-based position
+function reorder_buffers#close_until(position)
+  let buffers = s:visible_buffers()
+  let idx = max([0, min([a:position - 1, len(buffers) - 1])])
+  call s:close_buffers(buffers, buffers[:idx - 1])
+endfunction
+
+" Core: close a set of buffers, switching to a remaining buffer first
+function s:close_buffers(buffers, buffers_to_close)
+  if empty(a:buffers_to_close)
+    return
+  elseif s:has_modified_buffers(a:buffers_to_close) && !s:auto_save_buffers()
+    echo "Buffers must be saved first"
+    return
+  end
+
+  " If current buffer is being closed, switch to the nearest remaining buffer
+  let current_buffer = winbufnr(0)
+  if index(a:buffers_to_close, current_buffer) >= 0
+    let remaining = copy(a:buffers)->filter({_, nr -> index(a:buffers_to_close, nr) < 0})
+    if empty(remaining)
+      echo "Cannot close all buffers"
+      return
+    end
+    execute("buffer ". remaining[0])
+  end
+
+  execute("bwipeout ". join(a:buffers_to_close))
+endfunction
+
 " Core: move the buffer at current_index to target index by wiping and
 " re-opening the minimal set of buffers required to achieve the new order.
 function s:move_buffer_to_index(buffers, current_index, target)
