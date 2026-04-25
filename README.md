@@ -17,8 +17,8 @@ All positions are **1-based**, matching what you see in your tabline.
 | `:ShiftBufferLeft` | Move the current buffer one position to the left (wraps around) |
 | `:ShiftBufferRight` | Move the current buffer one position to the right (wraps around) |
 | `:MoveBufferTo {n}` | Move the current buffer to position `n` |
-| `:CloseBuffersAfter {n}` | Close all buffers after position `n` |
-| `:CloseBuffersUntil {n}` | Close all buffers before position `n` |
+| `:CloseBuffersAfter [n]` | Close all buffers after position `n` (defaults to current) |
+| `:CloseBuffersUntil [n]` | Close all buffers before position `n` (defaults to current) |
 
 ### Examples
 

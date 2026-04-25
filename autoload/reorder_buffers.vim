@@ -9,21 +9,21 @@ endfunction
 function reorder_buffers#move_to(position)
   let buffers = s:visible_buffers()
   let current_index = index(buffers, winbufnr(0))
-  let target = max([0, min([a:position - 1, len(buffers) - 1])])
+  let target = s:clamp_position(a:position, buffers)
   call s:move_buffer_to_index(buffers, current_index, target)
 endfunction
 
-" Close all buffers after the given 1-based position
-function reorder_buffers#close_after(position)
+" Close all buffers after the given 1-based position (or current buffer)
+function reorder_buffers#close_after(...)
   let buffers = s:visible_buffers()
-  let idx = max([0, min([a:position - 1, len(buffers) - 1])])
+  let idx = a:0 ? s:clamp_position(a:1, buffers) : index(buffers, winbufnr(0))
   call s:close_buffers(buffers, buffers[idx + 1:])
 endfunction
 
-" Close all buffers before the given 1-based position
-function reorder_buffers#close_until(position)
+" Close all buffers before the given 1-based position (or current buffer)
+function reorder_buffers#close_until(...)
   let buffers = s:visible_buffers()
-  let idx = max([0, min([a:position - 1, len(buffers) - 1])])
+  let idx = a:0 ? s:clamp_position(a:1, buffers) : index(buffers, winbufnr(0))
   call s:close_buffers(buffers, buffers[:idx - 1])
 endfunction
 
@@ -48,6 +48,7 @@ function s:close_buffers(buffers, buffers_to_close)
   end
 
   execute("bwipeout ". join(a:buffers_to_close))
+  doautocmd BufEnter
 endfunction
 
 " Core: move the buffer at current_index to target index by wiping and
@@ -78,6 +79,11 @@ function s:move_buffer_to_index(buffers, current_index, target)
 endfunction
 
 " Helpers
+
+" Convert a 1-based position to a 0-based index, clamped to valid range
+function s:clamp_position(position, buffers)
+  return max([0, min([a:position - 1, len(a:buffers) - 1])])
+endfunction
 
 function s:auto_save_buffers()
   if get(g:, 'reorder_buffers_allow_auto_save', v:false) == v:true
